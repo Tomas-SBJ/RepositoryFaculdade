@@ -2,9 +2,10 @@ package Exercicios;
 
 import java.util.Scanner;
 
-//Faça um algoritmo para calcular a média aritmética entre três notas de um aluno.
+//Faça um algoritmo para calcular a média aritmética entre quatro notas de um aluno.
+//Vericar sexo do aluno para retornar a mensagem dependendo do seu sexo.
 //Este mesmo algoritmo deve mostrar a situação desse aluno, que pode ser aprovado ou reprovado.
-//Média de aprovação é 7
+//Média de aprovação é 70
 
 public class Exercicio3 
 {
@@ -13,26 +14,52 @@ public class Exercicio3
 		double num1;
 		double num2;
 		double num3;
+		double num4;
 		double media;
+		String sexo;
 		
 		Scanner teclado = new Scanner(System.in);
 		
-		System.out.println("Digite sua primeira nota: ");
-		num1 = teclado.nextInt();
-		System.out.println("Digite sua segunda nota: ");
-		num2 = teclado.nextInt();
-		System.out.println("Digite sua terceira nota: ");
-		num3 = teclado.nextInt();
+		System.out.println("Informe seu sexo (M ou F): ");
+		sexo = teclado.next();
 		
-		media = (num1 + num2 + num3) / 3;
-		
-		if(media >= 7)
+		if(!sexo.equals("M") && !sexo.equals("F"))
 		{
-			System.out.println("Você foi aprovado, Média: " + media);
+			throw new IllegalArgumentException("Sexo Invalido!");
 		}
-		else if(media < 7)
+		
+		System.out.println("Digite sua primeira nota: ");
+		num1 = teclado.nextDouble();
+		System.out.println("Digite sua segunda nota: ");
+		num2 = teclado.nextDouble();
+		System.out.println("Digite sua terceira nota: ");
+		num3 = teclado.nextDouble();
+		System.out.println("Digite sua quarta nota: ");
+		num4 = teclado.nextDouble();
+		
+		media = (num1 + num2 + num3 + num4) / 4;
+		
+		if(sexo.equals("M"))	
 		{
-			System.out.println("Você foi reprovado, Média: " + media);
+			if(media >= 70)
+			{
+				System.out.println("Caro aluno, você foi aprovado. Média: " + media);
+			}
+			else
+			{
+				System.out.println("Caro aluno, você foi reprovado. Média: " + media);
+			}
+		}
+		else
+		{
+			if(media >= 70)
+			{
+				System.out.println("Cara aluna, você foi aprovada, Média: " + media);
+			}
+			else
+			{
+				System.out.println("Cara aluna, você foi reprovada, Média: " + media);
+			}
 		}
 	}
 }

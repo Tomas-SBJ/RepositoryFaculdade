@@ -19,7 +19,7 @@ public class Exercicio2
 		System.out.println("Digite o segundo número: ");
 		num2 = teclado.nextInt();
 		
-		if(num2 <= 0)
+		if(num2 == 0)
 		{
 			throw new IllegalArgumentException("Seu segundo não pode ser 0.");
 		}
