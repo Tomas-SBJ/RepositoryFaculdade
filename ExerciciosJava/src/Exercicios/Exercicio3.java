@@ -11,10 +11,10 @@ public class Exercicio3
 {
 	public static void main(String[] args) 
 	{
-		double num1;
-		double num2;
-		double num3;
-		double num4;
+		int num1;
+		int num2;
+		int num3;
+		int num4;
 		double media;
 		String sexo;
 		
@@ -28,14 +28,14 @@ public class Exercicio3
 			throw new IllegalArgumentException("Sexo Invalido!");
 		}
 		
-		System.out.println("Digite sua primeira nota: ");
-		num1 = teclado.nextDouble();
-		System.out.println("Digite sua segunda nota: ");
-		num2 = teclado.nextDouble();
-		System.out.println("Digite sua terceira nota: ");
-		num3 = teclado.nextDouble();
-		System.out.println("Digite sua quarta nota: ");
-		num4 = teclado.nextDouble();
+		System.out.println("Digite sua primeira nota de 1 a 100: ");
+		num1 = teclado.nextInt();
+		System.out.println("Digite sua segunda nota de 1 a 100: ");
+		num2 = teclado.nextInt();
+		System.out.println("Digite sua terceira nota de 1 a 100: ");
+		num3 = teclado.nextInt();
+		System.out.println("Digite sua quarta nota de 1 a 100: ");
+		num4 = teclado.nextInt();
 		
 		media = (num1 + num2 + num3 + num4) / 4;
 		
