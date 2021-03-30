@@ -1,0 +1,13 @@
+
+U	java:S106%"9Replace this use of System.out or System.err by a logger.(ÊûÛå8¥Ÿ¨‰‡/
+U	java:S106$"9Replace this use of System.out or System.err by a logger.(ó’¾˜8Ìù§‰‡/
+U	java:S106""9Replace this use of System.out or System.err by a logger.(ƒÙªâ8Ìù§‰‡/
+0
+java:S1220""Move this file to a named package.
+X
+java:S1128";Remove this unused import 'java.net.StandardSocketOptions'.(’Üî»8ºæ‘‰‡/
+U	java:S106"9Replace this use of System.out or System.err by a logger.(äãíÏ8ñ¾Æ‰‡/
+Z	java:S106"9Replace this use of System.out or System.err by a logger.(ûĞÄãùÿÿÿÿ8ñ¾Æ‰‡/
+Z	java:S106!"9Replace this use of System.out or System.err by a logger.(¾Şåİøÿÿÿÿ8ëË°‰‡/
+Z	java:S106"9Replace this use of System.out or System.err by a logger.(ŸËâÒûÿÿÿÿ8ñ¾Æ‰‡/
+T	java:S106#"9Replace this use of System.out or System.err by a logger.(îÓ¤k8Ìù§‰‡/
