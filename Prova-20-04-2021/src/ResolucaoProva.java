@@ -1,5 +1,8 @@
+import Entidades.Beneficiario;
+import Entidades.Desempregado;
+import Entidades.Empregado;
+import Entidades.Empregador;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,45 +10,47 @@ public class ResolucaoProva
 {
     public static void main(String[] args)
     {
+        boolean loop = true;
+        String continuar;
+
+        int categoria;
+        int mesesDesempregado;
+        int quantidadeFuncionarios;
+        int mesesAuxilio = 12;
+
         String nome;
         String dataNascimento;
-        String aposentado = null;
         String uf;
-        String continuar;
-        boolean loop = true;
-        int categoria;
-        int funcionarios;
-        int meses = 12;
-        double valorFuncionarios;
-        double valorBeneficio;
+        String aposentado;
+
+        double beneficioInicial = 0;
+        double beneficioFinal;
+        double valorBeneficioFuncionarios = 0;
+        double valorFuncionarios = 0;
         double acrescimoPa;
         double acrescimoSp;
         double acrescimoPe;
-        double acrescimoFuncionarios;
 
-        List<Beneficiario> beneficiarios = new ArrayList<>();
 
         Scanner teclado = new Scanner(System.in);
 
+        List<Beneficiario> beneficiarios = new ArrayList();
+        Beneficiario beneficiario = new Beneficiario();
+
         while(loop)
         {
-            Beneficiario beneficiario = new Beneficiario();
+            Empregado empregado = new Empregado();
+            Empregador empregador = new Empregador();
+            Desempregado desempregado = new Desempregado();
 
-            System.out.println("Digite seu nome completo:");
+            System.out.println("Digite seu nome completo.");
             nome = teclado.nextLine();
 
-            System.out.println("Digite sua data de nascimento:");
-            dataNascimento = teclado.next();
+            System.out.println("Digite sua data nascimento. (dd/MM/yyyy)");
+            dataNascimento = teclado.nextLine();
 
-            System.out.println("Digite seu UF:");
-            uf = teclado.next();
-
-            System.out.println("Digite o valor do seu auxilio:");
-            valorBeneficio = teclado.nextDouble();
-
-            acrescimoPa = BeneficioPa(uf, valorBeneficio);
-            acrescimoSp = BeneficioSp(uf, valorBeneficio);
-            acrescimoPe = BeneficioPe(uf, valorBeneficio);
+            System.out.println("Digite seu UF. (Ex: SC)");
+            uf = teclado.nextLine();
 
             System.out.println("""
                     Escolha uma categoria:
@@ -59,58 +64,106 @@ public class ResolucaoProva
             {
                 case 1 ->
                 {
-                    if (valorBeneficio >= 1000 && valorBeneficio <= 1800)
+                    System.out.println("Digite o valor do auxilio.");
+                    beneficioInicial = teclado.nextDouble();
+
+                    if (beneficioInicial >= 1000.00 && beneficioInicial <= 1800)
                     {
-                        System.out.println("Digite uma das opções caso você seja aposentado (Sim ou Não):");
+                        System.out.println("Empregado aposentado ? (Sim - Não)");
                         aposentado = teclado.next();
 
                         if (!aposentado.equals("Sim") && !aposentado.equals("Não"))
                         {
-                            throw new IllegalArgumentException("Opção inválida. (Por gentileza, digite Sim ou Não para a pergunta de aposentado");
+                            throw new IllegalArgumentException("Por gentileza, digite 'Sim' ou 'Não' para está pergunta");
                         }
                     }
                     else
                     {
-                        throw new IllegalArgumentException("Valor inválido");
+                        throw new IllegalArgumentException("Valor inválido. (1000.00 - 1800.00)");
                     }
+
+                    empregado.setAposentado(aposentado);
                 }
 
                 case 2 ->
                 {
-                    System.out.println("Quantidade de funcionarios:");
-                    funcionarios = teclado.nextInt();
+                    System.out.println("Digite a quantidade de funcionarios.");
+                    quantidadeFuncionarios = teclado.nextInt();
 
-                    acrescimoFuncionarios = BeneficioEmpregadores(funcionarios, valorBeneficio);
-                    meses = ValidarEmpregador(categoria, meses);
-                    valorFuncionarios = funcionarios * 200;
+                    valorFuncionarios = quantidadeFuncionarios * 200;
+                    valorBeneficioFuncionarios = BeneficioEmpregadores(quantidadeFuncionarios, valorFuncionarios);
+
+                    mesesAuxilio = MesesEmpregador(categoria, mesesAuxilio);
+
+                    empregador.setQuantidadeFuncionarios(quantidadeFuncionarios);
                 }
 
                 case 3 ->
                 {
-                    if (valorBeneficio >= 1500 && valorBeneficio <= 2300)
+                    System.out.println("Digite o valor do auxilio.");
+                    beneficioInicial = teclado.nextDouble();
+
+                    if (beneficioInicial >= 1500.00 && beneficioInicial <= 2300)
                     {
-                        System.out.println("Quantos meses desempregados:");
-                        meses = teclado.nextInt();
+                        System.out.println("Digite a quantidade de meses desempregado.");
+                        mesesDesempregado = teclado.nextInt();
                     }
                     else
                     {
-                        throw new IllegalArgumentException("Valor inválido");
+                        throw new IllegalArgumentException("Valor inválido. (1500.00 - 2300.00)");
                     }
+
+                    desempregado.setMesesDesempregado(mesesDesempregado);
                 }
 
-                default -> throw new IllegalArgumentException("Categoria " + categoria + " inválida");
+                default -> throw new IllegalArgumentException("Categoria inválida.");
             }
 
-            beneficiario.setNome(nome);
-            //beneficiario.setDataNascimento(dataNascimento);
-            beneficiario.setUf(uf);
-            beneficiario.setAposentado(aposentado);
-            beneficiario.setCategoria(categoria);
-            beneficiario.setValorBeneficio(valorBeneficio);
+            if (categoria != 2)
+            {
+                acrescimoPa = BeneficioPa(uf, beneficioInicial);
+                acrescimoSp = BeneficioSp(uf, beneficioInicial);
+                acrescimoPe = BeneficioPe(uf, beneficioInicial);
 
-            beneficiarios.add(beneficiario);
+                beneficioFinal = beneficioInicial + acrescimoPa + acrescimoSp + acrescimoPe;
 
-            System.out.println("Deseja adicionar um novo beneficiário ? (Sim ou Não)");
+                if (categoria == 1)
+                {
+                    empregado.setCategoria(categoria);
+                    empregado.setNome(nome);
+                    //empregado.setDataNascimento(dataNascimento);
+                    empregado.setUf(uf);
+                    empregado.setValorBeneficio(beneficioFinal);
+                }
+                else
+                {
+                    desempregado.setCategoria(categoria);
+                    desempregado.setNome(nome);
+                    //desempregado.setDataNascimento(dataNascimento);
+                    desempregado.setUf(uf);
+                    desempregado.setValorBeneficio(beneficioFinal);
+                }
+            }
+            else
+            {
+                acrescimoPa = BeneficioPa(uf, valorFuncionarios);
+                acrescimoSp = BeneficioSp(uf, valorFuncionarios);
+                acrescimoPe = BeneficioPe(uf, valorFuncionarios);
+
+                beneficioFinal = valorFuncionarios + valorBeneficioFuncionarios + acrescimoPa + acrescimoSp + acrescimoPe;
+
+                empregador.setCategoria(categoria);
+                empregador.setNome(nome);
+                //empregador.setDataNascimento(dataNascimento);
+                empregador.setUf(uf);
+                empregador.setValorBeneficio(beneficioFinal);
+            }
+
+            beneficiario.setEmpregado(empregado);
+            beneficiario.setDesempregado(desempregado);
+            beneficiario.setEmpregador(empregador);
+
+            System.out.println("Deseja adicionar um novo beneficiário ? (Sim - Não)");
             continuar = teclado.next();
 
             if (continuar.equals("Não"))
@@ -118,8 +171,6 @@ public class ResolucaoProva
                 loop = false;
             }
         }
-
-        System.out.println(beneficiarios);
     }
 
     public static double BeneficioPa(String uf, double beneficioPa)
@@ -164,31 +215,27 @@ public class ResolucaoProva
         return beneficioPe;
     }
 
-    public static double BeneficioEmpregadores(int funcionarios, double beneficioEmpregadores)
+    public static double BeneficioEmpregadores(int quantidadeFuncionarios, double valorFuncionarios)
     {
-        if (funcionarios <= 50)
+        if (quantidadeFuncionarios <= 50)
         {
-            beneficioEmpregadores *= 0.1;
+            valorFuncionarios *= 0.1;
         }
         else
         {
-            beneficioEmpregadores = 0;
+            valorFuncionarios = 0;
         }
 
-        return beneficioEmpregadores;
+        return valorFuncionarios;
     }
 
-    public static int ValidarEmpregador(int categoria, int meses)
+    public static int MesesEmpregador(int categoria, int mesesAuxilio)
     {
         if (categoria == 2)
         {
-            meses = 7;
+            mesesAuxilio = 7;
         }
 
-        return meses;
-    }
-
-    public static void ValidarIdade(Calendar dataNascimento)
-    {
+        return mesesAuxilio;
     }
 }

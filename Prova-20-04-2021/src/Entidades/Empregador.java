@@ -1,15 +1,12 @@
+package Entidades;
+
 import java.util.Calendar;
 
-public class Beneficiario
+public class Empregador extends BaseEntity
 {
-    public String Nome;
-    public Calendar DataNascimento;
-    public String Aposentado;
-    public String UF;
-    public int Categoria;
-    public double ValorBeneficio;
+    public int QuantidadeFuncionarios;
 
-    protected Beneficiario()
+    public Empregador()
     {
     }
 
@@ -23,11 +20,6 @@ public class Beneficiario
         DataNascimento = dataNascimento;
     }
 
-    public void setAposentado(String aposentado)
-    {
-        Aposentado = aposentado;
-    }
-
     public void setUf(String uf)
     {
         UF = uf;
@@ -38,8 +30,18 @@ public class Beneficiario
         Categoria = categoria;
     }
 
+    public void setQuantidadeFuncionarios(int quantidadeFuncionarios)
+    {
+        QuantidadeFuncionarios = quantidadeFuncionarios;
+    }
+
     public void setValorBeneficio(double valorBeneficio)
     {
         ValorBeneficio = valorBeneficio;
+    }
+
+    public void setMesesAuxilio(int mesesAuxilio)
+    {
+        MesesAuxilio = mesesAuxilio;
     }
 }
