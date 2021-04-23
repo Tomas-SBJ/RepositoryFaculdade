@@ -8,29 +8,16 @@ public class Desempregado extends BaseEntity
     {
     }
 
-    public void setNome(String nome)
+    public Desempregado(String nome, int anoNascimento, String uf, int categoria,
+                        double valorBeneficio, int mesesDesempregado, int mesesAuxilio)
     {
         Nome = nome;
-    }
-
-    public void setAnoNascimento(int anoNascimento)
-    {
         AnoNascimento = anoNascimento;
-    }
-
-    public void setUf(String uf)
-    {
         UF = uf;
-    }
-
-    public void setCategoria(int categoria)
-    {
         Categoria = categoria;
-    }
-
-    public void setValorBeneficio(double valorBeneficio)
-    {
         ValorBeneficio = valorBeneficio;
+        MesesDesempregado = mesesDesempregado;
+        MesesAuxilio = mesesAuxilio;
     }
 
     public void setMesesDesempregado(int mesesDesempregado)
@@ -38,8 +25,9 @@ public class Desempregado extends BaseEntity
         MesesDesempregado = mesesDesempregado;
     }
 
-    public void setMesesAuxilio(int mesesAuxilio)
+    public int getMesesDesempregado()
     {
-        MesesAuxilio = mesesAuxilio;
+        return MesesDesempregado;
     }
 }
+

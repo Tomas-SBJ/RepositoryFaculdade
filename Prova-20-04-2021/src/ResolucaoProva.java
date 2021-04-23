@@ -10,6 +10,11 @@ public class ResolucaoProva
 {
     public static void main(String[] args)
     {
+        List<Beneficiario> beneficiarios = new ArrayList<>();
+        List<Empregado> empregados = new ArrayList<>();
+        List<Empregador> empregadores = new ArrayList<>();
+        List<Desempregado> desempregados = new ArrayList<>();
+
         boolean loop = true;
 
         int categoria;
@@ -22,24 +27,21 @@ public class ResolucaoProva
         String nome;
         String uf;
         String aposentado;
+        String maiorIdade;
 
-        double beneficioInicial = 0;
+        double beneficioInicial;
         double beneficioFinal;
-        double valorBeneficioFuncionarios = 0;
+        double valorBeneficioFuncionarios;
         double acrescimoPa;
         double acrescimoSp;
         double acrescimoPe;
+        double valorTotalBeneficios = 0;
 
         Scanner teclado = new Scanner(System.in);
 
-        List<Beneficiario> beneficiarios = new ArrayList();
-        Beneficiario beneficiario = new Beneficiario();
-
         while(loop)
         {
-            Empregado empregado = new Empregado();
-            Empregador empregador = new Empregador();
-            Desempregado desempregado = new Desempregado();
+            Beneficiario beneficiario = new Beneficiario();
 
             System.out.println("Digite seu nome completo.");
             nome = teclado.nextLine();
@@ -47,10 +49,12 @@ public class ResolucaoProva
             System.out.println("Digite seu ano de nascimento. Ex: 2003");
             dataNascimento = teclado.nextInt();
 
-            ValidarIdade(dataNascimento);
+            maiorIdade = ValidarIdade(dataNascimento);
 
             System.out.println("Digite seu UF. (Ex: SC)");
             uf = teclado.next();
+
+            ValidarUF(uf);
 
             System.out.println("Digite a quantidade de meses que vai receber o auxilio");
             mesesAuxilio = teclado.nextInt();
@@ -69,6 +73,8 @@ public class ResolucaoProva
             {
                 case 1 ->
                 {
+                    Empregado empregado = new Empregado();
+
                     System.out.println("Digite o valor do auxilio.");
                     beneficioInicial = teclado.nextDouble();
 
@@ -84,11 +90,27 @@ public class ResolucaoProva
                         throw new IllegalArgumentException("Valor inválido. (1000.00 - 1800.00)");
                     }
 
+                    acrescimoPa = BeneficioPa(uf, beneficioInicial);
+                    acrescimoSp = BeneficioSp(uf, beneficioInicial);
+                    acrescimoPe = BeneficioPe(uf, beneficioInicial);
+
+                    beneficioFinal = beneficioInicial + acrescimoPa + acrescimoSp + acrescimoPe;
+
+                    empregado.setCategoria(categoria);
+                    empregado.setNome(nome);
+                    empregado.setAnoNascimento(dataNascimento);
+                    empregado.setUf(uf);
+                    empregado.setValorBeneficio(beneficioFinal);
+                    empregado.setMesesAuxilio(mesesAuxilio);
                     empregado.setAposentado(aposentado);
+
+                    empregados.add(empregado);
                 }
 
                 case 2 ->
                 {
+                    Empregador empregador = new Empregador();
+
                     System.out.println("Digite a quantidade de funcionarios.");
                     quantidadeFuncionarios = teclado.nextInt();
 
@@ -97,11 +119,27 @@ public class ResolucaoProva
 
                     mesesAuxilio = MesesEmpregador(categoria, mesesAuxilio);
 
+                    acrescimoPa = BeneficioPa(uf, beneficioInicial);
+                    acrescimoSp = BeneficioSp(uf, beneficioInicial);
+                    acrescimoPe = BeneficioPe(uf, beneficioInicial);
+
+                    beneficioFinal = beneficioInicial + valorBeneficioFuncionarios + acrescimoPa + acrescimoSp + acrescimoPe;
+
+                    empregador.setCategoria(categoria);
+                    empregador.setNome(nome);
+                    empregador.setAnoNascimento(dataNascimento);
+                    empregador.setUf(uf);
+                    empregador.setValorBeneficio(beneficioFinal);
+                    empregador.setMesesAuxilio(mesesAuxilio);
                     empregador.setQuantidadeFuncionarios(quantidadeFuncionarios);
+
+                    empregadores.add(empregador);
                 }
 
                 case 3 ->
                 {
+                    Desempregado desempregado = new Desempregado();
+
                     System.out.println("Digite o valor do auxilio.");
                     beneficioInicial = teclado.nextDouble();
 
@@ -115,54 +153,33 @@ public class ResolucaoProva
                         throw new IllegalArgumentException("Valor inválido. (1500.00 - 2300.00)");
                     }
 
-                    desempregado.setMesesDesempregado(mesesDesempregado);
-                }
+                    acrescimoPa = BeneficioPa(uf, beneficioInicial);
+                    acrescimoSp = BeneficioSp(uf, beneficioInicial);
+                    acrescimoPe = BeneficioPe(uf, beneficioInicial);
 
-                default -> throw new IllegalArgumentException("Categoria inválida.");
-            }
+                    beneficioFinal = beneficioInicial + acrescimoPa + acrescimoSp + acrescimoPe;
 
-            acrescimoPa = BeneficioPa(uf, beneficioInicial);
-            acrescimoSp = BeneficioSp(uf, beneficioInicial);
-            acrescimoPe = BeneficioPe(uf, beneficioInicial);
-
-            if (categoria != 2)
-            {
-                beneficioFinal = beneficioInicial + acrescimoPa + acrescimoSp + acrescimoPe;
-
-                if (categoria == 1)
-                {
-                    empregado.setCategoria(categoria);
-                    empregado.setNome(nome);
-                    empregado.setAnoNascimento(dataNascimento);
-                    empregado.setUf(uf);
-                    empregado.setValorBeneficio(beneficioFinal);
-                    empregado.setMesesAuxilio(mesesAuxilio);
-                }
-                else
-                {
                     desempregado.setCategoria(categoria);
                     desempregado.setNome(nome);
                     desempregado.setAnoNascimento(dataNascimento);
                     desempregado.setUf(uf);
                     desempregado.setValorBeneficio(beneficioFinal);
                     desempregado.setMesesAuxilio(mesesAuxilio);
+                    desempregado.setMesesDesempregado(mesesDesempregado);
+
+                    desempregados.add(desempregado);
+
+                    System.out.println(nome + ", " + dataNascimento + ", Categoria: ");
                 }
-            }
-            else
-            {
-                beneficioFinal = beneficioInicial + valorBeneficioFuncionarios + acrescimoPa + acrescimoSp + acrescimoPe;
 
-                empregador.setCategoria(categoria);
-                empregador.setNome(nome);
-                empregador.setAnoNascimento(dataNascimento);
-                empregador.setUf(uf);
-                empregador.setValorBeneficio(beneficioFinal);
-                empregador.setMesesAuxilio(mesesAuxilio);
+                default -> throw new IllegalArgumentException("Categoria inválida.");
             }
 
-            beneficiario.setEmpregado(empregado);
-            beneficiario.setDesempregado(desempregado);
-            beneficiario.setEmpregador(empregador);
+            beneficiario.setEmpregado(empregados);
+            beneficiario.setEmpregador(empregadores);
+            beneficiario.setDesempregado(desempregados);
+
+            beneficiarios.add(beneficiario);
 
             System.out.println("Deseja adicionar um novo beneficiário ? (Sim - Não)");
             continuar = teclado.next();
@@ -171,7 +188,12 @@ public class ResolucaoProva
             {
                 loop = false;
             }
+
+            valorTotalBeneficios += beneficioFinal;
         }
+
+        System.out.println("Total de beneficiários: " + beneficiarios.size());
+        System.out.println("Total de valor que será concedido: " + valorTotalBeneficios);
     }
 
     public static double BeneficioPa(String uf, double beneficioPa)
@@ -240,16 +262,19 @@ public class ResolucaoProva
         return mesesAuxilio;
     }
 
-    public static void ValidarIdade(int dataNascimento)
+    public static String ValidarIdade(int dataNascimento)
     {
-        int anoAtual = LocalDate.now().getYear();
+        String maiorIdade = "Maior de idade";
 
+        int anoAtual = LocalDate.now().getYear();
         int idade = anoAtual - dataNascimento;
 
         if (idade < 18)
         {
             throw new IllegalArgumentException("Benefício inválido para esta idade.");
         }
+
+        return maiorIdade;
     }
 
     public static void ValidarMes(int mesesAuxilio)
@@ -265,6 +290,35 @@ public class ResolucaoProva
         if (!aposentado.equals("Sim") && !aposentado.equals("Não"))
         {
             throw new IllegalArgumentException("Por gentileza, digite 'Sim' ou 'Não' para está pergunta");
+        }
+    }
+
+    public static void ValidarUF(String uf)
+    {
+        if (uf.length() != 2)
+        {
+            throw new IllegalArgumentException("UF inválido.");
+        }
+    }
+
+    public static String ConverterCategoria(int categoriaInt)
+    {
+        String categoria;
+
+        if (categoriaInt == 1)
+        {
+            categoria = "Empregado";
+            return categoria;
+        }
+        else if(categoriaInt == 2)
+        {
+            categoria = "Empregador";
+            return categoria;
+        }
+        else
+        {
+            categoria = "Desempregado";
+            return categoria;
         }
     }
 }

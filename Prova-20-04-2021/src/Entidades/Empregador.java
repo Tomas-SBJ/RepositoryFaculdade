@@ -8,38 +8,25 @@ public class Empregador extends BaseEntity
     {
     }
 
-    public void setNome(String nome)
+    public Empregador(String nome, int anoNascimento, String uf, int categoria,
+                        double valorBeneficio, int quantidadeFuncionarios, int mesesAuxilio)
     {
         Nome = nome;
-    }
-
-    public void setAnoNascimento(int anoNascimento)
-    {
         AnoNascimento = anoNascimento;
-    }
-
-    public void setUf(String uf)
-    {
         UF = uf;
+        Categoria = categoria;
+        ValorBeneficio = valorBeneficio;
+        MesesAuxilio = mesesAuxilio;
+        QuantidadeFuncionarios = quantidadeFuncionarios;
     }
 
-    public void setCategoria(int categoria)
+    public int getQuantidadeFuncionarios()
     {
-        Categoria = categoria;
+        return QuantidadeFuncionarios;
     }
 
     public void setQuantidadeFuncionarios(int quantidadeFuncionarios)
     {
         QuantidadeFuncionarios = quantidadeFuncionarios;
-    }
-
-    public void setValorBeneficio(double valorBeneficio)
-    {
-        ValorBeneficio = valorBeneficio;
-    }
-
-    public void setMesesAuxilio(int mesesAuxilio)
-    {
-        MesesAuxilio = mesesAuxilio;
     }
 }
