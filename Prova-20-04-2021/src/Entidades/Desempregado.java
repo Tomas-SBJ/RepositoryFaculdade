@@ -1,9 +1,5 @@
 package Entidades;
 
-import Entidades.BaseEntity;
-
-import java.util.Calendar;
-
 public class Desempregado extends BaseEntity
 {
     public int MesesDesempregado;
@@ -17,9 +13,9 @@ public class Desempregado extends BaseEntity
         Nome = nome;
     }
 
-    public void setDataNascimento(Calendar dataNascimento)
+    public void setAnoNascimento(int anoNascimento)
     {
-        DataNascimento = dataNascimento;
+        AnoNascimento = anoNascimento;
     }
 
     public void setUf(String uf)

@@ -2,35 +2,33 @@ import Entidades.Beneficiario;
 import Entidades.Desempregado;
 import Entidades.Empregado;
 import Entidades.Empregador;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+
+import java.time.LocalDate;
+import java.util.*;
 
 public class ResolucaoProva
 {
     public static void main(String[] args)
     {
         boolean loop = true;
-        String continuar;
 
         int categoria;
         int mesesDesempregado;
         int quantidadeFuncionarios;
-        int mesesAuxilio = 12;
+        int mesesAuxilio;
+        int dataNascimento;
 
+        String continuar;
         String nome;
-        String dataNascimento;
         String uf;
         String aposentado;
 
         double beneficioInicial = 0;
         double beneficioFinal;
         double valorBeneficioFuncionarios = 0;
-        double valorFuncionarios = 0;
         double acrescimoPa;
         double acrescimoSp;
         double acrescimoPe;
-
 
         Scanner teclado = new Scanner(System.in);
 
@@ -46,11 +44,18 @@ public class ResolucaoProva
             System.out.println("Digite seu nome completo.");
             nome = teclado.nextLine();
 
-            System.out.println("Digite sua data nascimento. (dd/MM/yyyy)");
-            dataNascimento = teclado.nextLine();
+            System.out.println("Digite seu ano de nascimento. Ex: 2003");
+            dataNascimento = teclado.nextInt();
+
+            ValidarIdade(dataNascimento);
 
             System.out.println("Digite seu UF. (Ex: SC)");
-            uf = teclado.nextLine();
+            uf = teclado.next();
+
+            System.out.println("Digite a quantidade de meses que vai receber o auxilio");
+            mesesAuxilio = teclado.nextInt();
+
+            ValidarMes(mesesAuxilio);
 
             System.out.println("""
                     Escolha uma categoria:
@@ -72,10 +77,7 @@ public class ResolucaoProva
                         System.out.println("Empregado aposentado ? (Sim - Não)");
                         aposentado = teclado.next();
 
-                        if (!aposentado.equals("Sim") && !aposentado.equals("Não"))
-                        {
-                            throw new IllegalArgumentException("Por gentileza, digite 'Sim' ou 'Não' para está pergunta");
-                        }
+                        ValidarAposentado(aposentado);
                     }
                     else
                     {
@@ -90,8 +92,8 @@ public class ResolucaoProva
                     System.out.println("Digite a quantidade de funcionarios.");
                     quantidadeFuncionarios = teclado.nextInt();
 
-                    valorFuncionarios = quantidadeFuncionarios * 200;
-                    valorBeneficioFuncionarios = BeneficioEmpregadores(quantidadeFuncionarios, valorFuncionarios);
+                    beneficioInicial = quantidadeFuncionarios * 200;
+                    valorBeneficioFuncionarios = BeneficioEmpregadores(quantidadeFuncionarios, beneficioInicial);
 
                     mesesAuxilio = MesesEmpregador(categoria, mesesAuxilio);
 
@@ -119,44 +121,43 @@ public class ResolucaoProva
                 default -> throw new IllegalArgumentException("Categoria inválida.");
             }
 
+            acrescimoPa = BeneficioPa(uf, beneficioInicial);
+            acrescimoSp = BeneficioSp(uf, beneficioInicial);
+            acrescimoPe = BeneficioPe(uf, beneficioInicial);
+
             if (categoria != 2)
             {
-                acrescimoPa = BeneficioPa(uf, beneficioInicial);
-                acrescimoSp = BeneficioSp(uf, beneficioInicial);
-                acrescimoPe = BeneficioPe(uf, beneficioInicial);
-
                 beneficioFinal = beneficioInicial + acrescimoPa + acrescimoSp + acrescimoPe;
 
                 if (categoria == 1)
                 {
                     empregado.setCategoria(categoria);
                     empregado.setNome(nome);
-                    //empregado.setDataNascimento(dataNascimento);
+                    empregado.setAnoNascimento(dataNascimento);
                     empregado.setUf(uf);
                     empregado.setValorBeneficio(beneficioFinal);
+                    empregado.setMesesAuxilio(mesesAuxilio);
                 }
                 else
                 {
                     desempregado.setCategoria(categoria);
                     desempregado.setNome(nome);
-                    //desempregado.setDataNascimento(dataNascimento);
+                    desempregado.setAnoNascimento(dataNascimento);
                     desempregado.setUf(uf);
                     desempregado.setValorBeneficio(beneficioFinal);
+                    desempregado.setMesesAuxilio(mesesAuxilio);
                 }
             }
             else
             {
-                acrescimoPa = BeneficioPa(uf, valorFuncionarios);
-                acrescimoSp = BeneficioSp(uf, valorFuncionarios);
-                acrescimoPe = BeneficioPe(uf, valorFuncionarios);
-
-                beneficioFinal = valorFuncionarios + valorBeneficioFuncionarios + acrescimoPa + acrescimoSp + acrescimoPe;
+                beneficioFinal = beneficioInicial + valorBeneficioFuncionarios + acrescimoPa + acrescimoSp + acrescimoPe;
 
                 empregador.setCategoria(categoria);
                 empregador.setNome(nome);
-                //empregador.setDataNascimento(dataNascimento);
+                empregador.setAnoNascimento(dataNascimento);
                 empregador.setUf(uf);
                 empregador.setValorBeneficio(beneficioFinal);
+                empregador.setMesesAuxilio(mesesAuxilio);
             }
 
             beneficiario.setEmpregado(empregado);
@@ -237,5 +238,33 @@ public class ResolucaoProva
         }
 
         return mesesAuxilio;
+    }
+
+    public static void ValidarIdade(int dataNascimento)
+    {
+        int anoAtual = LocalDate.now().getYear();
+
+        int idade = anoAtual - dataNascimento;
+
+        if (idade < 18)
+        {
+            throw new IllegalArgumentException("Benefício inválido para esta idade.");
+        }
+    }
+
+    public static void ValidarMes(int mesesAuxilio)
+    {
+        if (mesesAuxilio < 2 || mesesAuxilio > 12)
+        {
+            throw new IllegalArgumentException("Meses inválido");
+        }
+    }
+
+    public static void ValidarAposentado(String aposentado)
+    {
+        if (!aposentado.equals("Sim") && !aposentado.equals("Não"))
+        {
+            throw new IllegalArgumentException("Por gentileza, digite 'Sim' ou 'Não' para está pergunta");
+        }
     }
 }

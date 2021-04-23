@@ -1,11 +1,9 @@
 package Entidades;
 
-import java.util.Calendar;
-
 public class BaseEntity
 {
     public String Nome;
-    public Calendar DataNascimento;
+    public int AnoNascimento;
     public String UF;
     public int Categoria;
     public double ValorBeneficio;
