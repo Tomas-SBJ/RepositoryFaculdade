@@ -24,10 +24,5 @@ public class Desempregado extends BaseEntity
     {
         MesesDesempregado = mesesDesempregado;
     }
-
-    public int getMesesDesempregado()
-    {
-        return MesesDesempregado;
-    }
 }
 

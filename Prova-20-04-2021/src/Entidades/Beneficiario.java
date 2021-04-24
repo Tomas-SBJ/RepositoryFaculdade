@@ -4,9 +4,9 @@ import java.util.List;
 
 public class Beneficiario
 {
-    public List<Desempregado> Desempregado;
-    public List<Empregador> Empregador;
-    public List<Empregado> Empregado;
+    protected List<Desempregado> Desempregado;
+    protected List<Empregador> Empregador;
+    protected List<Empregado> Empregado;
 
     public Beneficiario()
     {
@@ -32,20 +32,5 @@ public class Beneficiario
     public void setEmpregado(List<Empregado> empregado)
     {
         Empregado = empregado;
-    }
-
-    public List<Desempregado> getDesempregado()
-    {
-        return Desempregado;
-    }
-
-    public List<Empregado> getEmpregado()
-    {
-        return Empregado;
-    }
-
-    public List<Empregador> getEmpregador()
-    {
-        return Empregador;
     }
 }

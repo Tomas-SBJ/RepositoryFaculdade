@@ -3,10 +3,9 @@ import Entidades.Desempregado;
 import Entidades.Empregado;
 import Entidades.Empregador;
 
-import java.time.LocalDate;
 import java.util.*;
 
-public class ResolucaoProva
+public class ResolucaoProva extends Metodos
 {
     public static void main(String[] args)
     {
@@ -16,26 +15,30 @@ public class ResolucaoProva
         List<Desempregado> desempregados = new ArrayList<>();
 
         boolean loop = true;
-
         int categoria;
         int mesesDesempregado;
         int quantidadeFuncionarios;
         int mesesAuxilio;
         int dataNascimento;
-
+        int maiorTempo1 = 0;
+        int maiorTempo2 = 0;
         String continuar;
         String nome;
         String uf;
         String aposentado;
         String maiorIdade;
-
+        String nomeCategoria;
+        String beneficiarioMaiorValor1 = null;
+        String beneficiarioMaiorValor2 = null;
+        String beneficiarioMaiorTempo1 = null;
+        String beneficiarioMaiorTempo2 = null;
         double beneficioInicial;
         double beneficioFinal;
         double valorBeneficioFuncionarios;
-        double acrescimoPa;
-        double acrescimoSp;
-        double acrescimoPe;
-        double valorTotalBeneficios = 0;
+        double acrescimoEstados;
+        double valorTotalBeneficiarios = 0;
+        double maiorBeneficio1 = 0;
+        double maiorBeneficio2 = 0;
 
         Scanner teclado = new Scanner(System.in);
 
@@ -43,23 +46,20 @@ public class ResolucaoProva
         {
             Beneficiario beneficiario = new Beneficiario();
 
-            System.out.println("Digite seu nome completo.");
-            nome = teclado.nextLine();
+            do
+            {
+                System.out.println("Digite seu nome completo.");
+                nome = teclado.nextLine();
+            }
+            while (nome.isEmpty());
 
             System.out.println("Digite seu ano de nascimento. Ex: 2003");
             dataNascimento = teclado.nextInt();
-
-            maiorIdade = ValidarIdade(dataNascimento);
+            maiorIdade = validarIdade(dataNascimento);
 
             System.out.println("Digite seu UF. (Ex: SC)");
-            uf = teclado.next();
-
-            ValidarUF(uf);
-
-            System.out.println("Digite a quantidade de meses que vai receber o auxilio");
-            mesesAuxilio = teclado.nextInt();
-
-            ValidarMes(mesesAuxilio);
+            uf = teclado.next().toUpperCase();
+            validarUF(uf);
 
             System.out.println("""
                     Escolha uma categoria:
@@ -68,6 +68,7 @@ public class ResolucaoProva
                     Categoria 3 - Desempregado
                     """);
             categoria = teclado.nextInt();
+            nomeCategoria = converterCategoria(categoria);
 
             switch (categoria)
             {
@@ -75,26 +76,21 @@ public class ResolucaoProva
                 {
                     Empregado empregado = new Empregado();
 
+                    System.out.println("Digite a quantidade de meses que vai receber o auxilio");
+                    mesesAuxilio = teclado.nextInt();
+                    validarMes(mesesAuxilio);
+
                     System.out.println("Digite o valor do auxilio.");
                     beneficioInicial = teclado.nextDouble();
+                    validarBeneficioInicial(categoria, beneficioInicial);
 
-                    if (beneficioInicial >= 1000.00 && beneficioInicial <= 1800)
-                    {
-                        System.out.println("Empregado aposentado ? (Sim - Não)");
-                        aposentado = teclado.next();
+                    System.out.println("Empregado aposentado ? (Sim - Não)");
+                    aposentado = teclado.next();
+                    validarAposentado(aposentado);
 
-                        ValidarAposentado(aposentado);
-                    }
-                    else
-                    {
-                        throw new IllegalArgumentException("Valor inválido. (1000.00 - 1800.00)");
-                    }
+                    acrescimoEstados = beneficioEstados(uf, beneficioInicial);
 
-                    acrescimoPa = BeneficioPa(uf, beneficioInicial);
-                    acrescimoSp = BeneficioSp(uf, beneficioInicial);
-                    acrescimoPe = BeneficioPe(uf, beneficioInicial);
-
-                    beneficioFinal = beneficioInicial + acrescimoPa + acrescimoSp + acrescimoPe;
+                    beneficioFinal = beneficioInicial + acrescimoEstados;
 
                     empregado.setCategoria(categoria);
                     empregado.setNome(nome);
@@ -103,8 +99,37 @@ public class ResolucaoProva
                     empregado.setValorBeneficio(beneficioFinal);
                     empregado.setMesesAuxilio(mesesAuxilio);
                     empregado.setAposentado(aposentado);
-
                     empregados.add(empregado);
+
+                    switch (uf)
+                    {
+                        case "PA" ->
+                                System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                        dataNascimento + " " + maiorIdade + ", usuário é do Pará então terá um acrescimo de R$"
+                                        + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Usuário é aposentado ? (" +
+                                        aposentado + "), benefício será de " + mesesAuxilio +
+                                        " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                        case "SP" ->
+                                System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                        dataNascimento + " " + maiorIdade + ", usuário é de São Paulo então terá um acrescimo de R$"
+                                        + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Usuário é aposentado ? (" +
+                                        aposentado + "), benefício será de " + mesesAuxilio +
+                                        " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                        case "PE" ->
+                                System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                        dataNascimento + " " + maiorIdade + ", usuário é de Pernambuco então terá um acrescimo de R$"
+                                        + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Usuário é aposentado ? (" +
+                                        aposentado + "), benefício será de " + mesesAuxilio +
+                                        " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                        default ->
+                                System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                        dataNascimento + " " + maiorIdade + ". Categoria - " + nomeCategoria + ". Usuário é aposentado ? (" +
+                                        aposentado + "), benefício será de " + mesesAuxilio +
+                                        " meses e o valor do benefício será de R$" + beneficioFinal);
+                    }
                 }
 
                 case 2 ->
@@ -115,15 +140,14 @@ public class ResolucaoProva
                     quantidadeFuncionarios = teclado.nextInt();
 
                     beneficioInicial = quantidadeFuncionarios * 200;
-                    valorBeneficioFuncionarios = BeneficioEmpregadores(quantidadeFuncionarios, beneficioInicial);
+                    acrescimoEstados = beneficioEstados(uf, beneficioInicial);
 
-                    mesesAuxilio = MesesEmpregador(categoria, mesesAuxilio);
+                    beneficioInicial = beneficioInicial + acrescimoEstados;
 
-                    acrescimoPa = BeneficioPa(uf, beneficioInicial);
-                    acrescimoSp = BeneficioSp(uf, beneficioInicial);
-                    acrescimoPe = BeneficioPe(uf, beneficioInicial);
+                    valorBeneficioFuncionarios = beneficioEmpregadores(quantidadeFuncionarios, beneficioInicial);
+                    mesesAuxilio = mesesEmpregador(categoria);
 
-                    beneficioFinal = beneficioInicial + valorBeneficioFuncionarios + acrescimoPa + acrescimoSp + acrescimoPe;
+                    beneficioFinal = beneficioInicial + valorBeneficioFuncionarios;
 
                     empregador.setCategoria(categoria);
                     empregador.setNome(nome);
@@ -132,32 +156,93 @@ public class ResolucaoProva
                     empregador.setValorBeneficio(beneficioFinal);
                     empregador.setMesesAuxilio(mesesAuxilio);
                     empregador.setQuantidadeFuncionarios(quantidadeFuncionarios);
-
                     empregadores.add(empregador);
+
+                    if (quantidadeFuncionarios <= 50)
+                    {
+                        switch (uf)
+                        {
+                            case "PA" ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + ", usuário é do Pará e possui " + quantidadeFuncionarios +
+                                            " funcionarios então terá um acrescimo de R$" + (acrescimoEstados + valorBeneficioFuncionarios) +
+                                            ". Categoria - " + nomeCategoria + ". Benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                            case "SP" ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + ", usuário é de São Paulo e possui " + quantidadeFuncionarios +
+                                            " funcionarios então terá um acrescimo de R$" + (acrescimoEstados + valorBeneficioFuncionarios) +
+                                            ". Categoria - " + nomeCategoria + ". Benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                            case "PE" ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + ", usuário é de Pernambuco e possui " + quantidadeFuncionarios +
+                                            " funcionarios então terá um acrescimo de R$" + (acrescimoEstados + valorBeneficioFuncionarios) +
+                                            ". Categoria - " + nomeCategoria + ". Benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                            default ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + "" + ". Categoria - " + nomeCategoria + ". Possui " +
+                                            quantidadeFuncionarios + " funcionarios então terá um acrescimo de R$" +
+                                            valorBeneficioFuncionarios + ". Benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+                        }
+                    }
+                    else
+                    {
+                        switch (uf)
+                        {
+                            case "PA" ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + ", usuário é do Pará então terá um acrescimo de R$"
+                                            + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Possui " +
+                                            quantidadeFuncionarios + " funcionarios, benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                            case "SP" ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + ", usuário é de São Paulo então terá um acrescimo de R$"
+                                            + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Possui " +
+                                            quantidadeFuncionarios + " funcionarios, benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                            case "PE" ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + ", usuário é Pernambuco e então terá um acrescimo de R$"
+                                            + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Possui " +
+                                            quantidadeFuncionarios + " funcionarios, benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                            default ->
+                                    System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                            dataNascimento + " " + maiorIdade + ". Categoria - " + nomeCategoria + ". Possui " +
+                                            quantidadeFuncionarios + " funcionarios, benefício será de " + mesesAuxilio +
+                                            " meses e o valor do benefício será de R$" + beneficioFinal);
+                        }
+                    }
                 }
 
                 case 3 ->
                 {
                     Desempregado desempregado = new Desempregado();
 
+                    System.out.println("Digite a quantidade de meses que vai receber o auxilio");
+                    mesesAuxilio = teclado.nextInt();
+                    validarMes(mesesAuxilio);
+
                     System.out.println("Digite o valor do auxilio.");
                     beneficioInicial = teclado.nextDouble();
+                    validarBeneficioInicial(categoria, beneficioInicial);
 
-                    if (beneficioInicial >= 1500.00 && beneficioInicial <= 2300)
-                    {
-                        System.out.println("Digite a quantidade de meses desempregado.");
-                        mesesDesempregado = teclado.nextInt();
-                    }
-                    else
-                    {
-                        throw new IllegalArgumentException("Valor inválido. (1500.00 - 2300.00)");
-                    }
+                    System.out.println("Digite a quantidade de meses desempregado.");
+                    mesesDesempregado = teclado.nextInt();
 
-                    acrescimoPa = BeneficioPa(uf, beneficioInicial);
-                    acrescimoSp = BeneficioSp(uf, beneficioInicial);
-                    acrescimoPe = BeneficioPe(uf, beneficioInicial);
+                    acrescimoEstados = beneficioEstados(uf, beneficioInicial);
 
-                    beneficioFinal = beneficioInicial + acrescimoPa + acrescimoSp + acrescimoPe;
+                    beneficioFinal = beneficioInicial + acrescimoEstados;
 
                     desempregado.setCategoria(categoria);
                     desempregado.setNome(nome);
@@ -166,10 +251,37 @@ public class ResolucaoProva
                     desempregado.setValorBeneficio(beneficioFinal);
                     desempregado.setMesesAuxilio(mesesAuxilio);
                     desempregado.setMesesDesempregado(mesesDesempregado);
-
                     desempregados.add(desempregado);
 
-                    System.out.println(nome + ", " + dataNascimento + ", Categoria: ");
+                    switch (uf)
+                    {
+                        case "PA" ->
+                            System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                    dataNascimento + " " + maiorIdade + ", usuário é do Pará e então terá um acrescimo de R$"
+                                    + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Está à " +
+                                    mesesDesempregado + " meses desempregado, benefício será de " + mesesAuxilio +
+                                    " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                        case "SP" ->
+                            System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                    dataNascimento + " " + maiorIdade + ", usuário é de São Paulo e então terá um acrescimo de R$"
+                                    + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Está à " +
+                                    mesesDesempregado + " meses desempregado, benefício será de " + mesesAuxilio +
+                                    " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                        case "PE" ->
+                            System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                    dataNascimento + " " + maiorIdade + ", usuário é de Pernambuco e então terá um acrescimo de R$"
+                                    + acrescimoEstados + ". Categoria - " + nomeCategoria + ". Está à " +
+                                    mesesDesempregado + " meses desempregado, benefício será de " + mesesAuxilio +
+                                    " meses e o valor do benefício será de R$" + beneficioFinal);
+
+                        default ->
+                                System.out.println("Cadastro realizado com sucesso: " + nome + ", nascido no ano de " +
+                                        dataNascimento + " " + maiorIdade + ". Categoria - " + nomeCategoria + ". Está à " +
+                                        mesesDesempregado + " meses desempregado, benefício será de " + mesesAuxilio +
+                                        " meses e o valor do benefício será de R$" + beneficioFinal);
+                    }
                 }
 
                 default -> throw new IllegalArgumentException("Categoria inválida.");
@@ -178,147 +290,49 @@ public class ResolucaoProva
             beneficiario.setEmpregado(empregados);
             beneficiario.setEmpregador(empregadores);
             beneficiario.setDesempregado(desempregados);
-
             beneficiarios.add(beneficiario);
 
             System.out.println("Deseja adicionar um novo beneficiário ? (Sim - Não)");
             continuar = teclado.next();
+
+            if (maiorBeneficio1 < beneficioFinal)
+            {
+                beneficiarioMaiorValor1 = nome;
+                maiorBeneficio1 = beneficioFinal;
+            }
+            else if (maiorBeneficio2 < maiorBeneficio1 && maiorBeneficio2 < beneficioFinal)
+            {
+                beneficiarioMaiorValor2 = nome;
+                maiorBeneficio2 = beneficioFinal;
+            }
+
+            if (maiorTempo1 < mesesAuxilio)
+            {
+                beneficiarioMaiorTempo1 = nome;
+                maiorTempo1 = mesesAuxilio;
+            }
+            else if (maiorTempo2 < maiorTempo1 && maiorTempo2 < mesesAuxilio)
+            {
+                beneficiarioMaiorTempo2 = nome;
+                maiorTempo2 = mesesAuxilio;
+            }
 
             if (continuar.equals("Não"))
             {
                 loop = false;
             }
 
-            valorTotalBeneficios += beneficioFinal;
+            valorTotalBeneficiarios += beneficioFinal;
+
         }
 
         System.out.println("Total de beneficiários: " + beneficiarios.size());
-        System.out.println("Total de valor que será concedido: " + valorTotalBeneficios);
-    }
+        System.out.println("Total de valor que será concedido: " + valorTotalBeneficiarios);
+        System.out.println("Beneficiário à receber o maior valor: " + beneficiarioMaiorValor1);
+        System.out.println("Beneficiário à receber o segundo maior valor: " + beneficiarioMaiorValor2);
+        System.out.println("Beneficiário à receber o benefício por mais tempo: " + beneficiarioMaiorTempo1);
+        System.out.println("Beneficiário à receber o segundo benefício por mais tempo: " + beneficiarioMaiorTempo2);
 
-    public static double BeneficioPa(String uf, double beneficioPa)
-    {
-        if (uf.equals("PA"))
-        {
-            beneficioPa *= 0.09;
-        }
-        else
-        {
-            beneficioPa = 0;
-        }
-
-        return beneficioPa;
-    }
-
-    public static double BeneficioSp(String uf, double beneficioSp)
-    {
-        if (uf.equals("SP"))
-        {
-            beneficioSp *= 0.1;
-        }
-        else
-        {
-            beneficioSp = 0;
-        }
-
-        return beneficioSp;
-    }
-
-    public static double BeneficioPe(String uf, double beneficioPe)
-    {
-        if (uf.equals("PE"))
-        {
-            beneficioPe *= 0.14;
-        }
-        else
-        {
-            beneficioPe = 0;
-        }
-
-        return beneficioPe;
-    }
-
-    public static double BeneficioEmpregadores(int quantidadeFuncionarios, double valorFuncionarios)
-    {
-        if (quantidadeFuncionarios <= 50)
-        {
-            valorFuncionarios *= 0.1;
-        }
-        else
-        {
-            valorFuncionarios = 0;
-        }
-
-        return valorFuncionarios;
-    }
-
-    public static int MesesEmpregador(int categoria, int mesesAuxilio)
-    {
-        if (categoria == 2)
-        {
-            mesesAuxilio = 7;
-        }
-
-        return mesesAuxilio;
-    }
-
-    public static String ValidarIdade(int dataNascimento)
-    {
-        String maiorIdade = "Maior de idade";
-
-        int anoAtual = LocalDate.now().getYear();
-        int idade = anoAtual - dataNascimento;
-
-        if (idade < 18)
-        {
-            throw new IllegalArgumentException("Benefício inválido para esta idade.");
-        }
-
-        return maiorIdade;
-    }
-
-    public static void ValidarMes(int mesesAuxilio)
-    {
-        if (mesesAuxilio < 2 || mesesAuxilio > 12)
-        {
-            throw new IllegalArgumentException("Meses inválido");
-        }
-    }
-
-    public static void ValidarAposentado(String aposentado)
-    {
-        if (!aposentado.equals("Sim") && !aposentado.equals("Não"))
-        {
-            throw new IllegalArgumentException("Por gentileza, digite 'Sim' ou 'Não' para está pergunta");
-        }
-    }
-
-    public static void ValidarUF(String uf)
-    {
-        if (uf.length() != 2)
-        {
-            throw new IllegalArgumentException("UF inválido.");
-        }
-    }
-
-    public static String ConverterCategoria(int categoriaInt)
-    {
-        String categoria;
-
-        if (categoriaInt == 1)
-        {
-            categoria = "Empregado";
-            return categoria;
-        }
-        else if(categoriaInt == 2)
-        {
-            categoria = "Empregador";
-            return categoria;
-        }
-        else
-        {
-            categoria = "Desempregado";
-            return categoria;
-        }
+        teclado.close();
     }
 }

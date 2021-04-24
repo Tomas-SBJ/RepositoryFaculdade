@@ -38,34 +38,4 @@ public class BaseEntity
     {
         MesesAuxilio = mesesAuxilio;
     }
-
-    public String getNome()
-    {
-        return Nome;
-    }
-
-    public int getAnoNascimento()
-    {
-        return AnoNascimento;
-    }
-
-    public String getUf()
-    {
-        return UF;
-    }
-
-    public int getCategoria()
-    {
-        return Categoria;
-    }
-
-    public double getValorBeneficio()
-    {
-        return ValorBeneficio;
-    }
-
-    public int getMesesAuxilio()
-    {
-        return MesesAuxilio;
-    }
 }

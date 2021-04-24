@@ -20,12 +20,6 @@ public class Empregado extends BaseEntity
         Aposentado = aposentado;
     }
 
-
-    public String getAposentado()
-    {
-        return Aposentado;
-    }
-
     public void setAposentado(String aposentado)
     {
         Aposentado = aposentado;

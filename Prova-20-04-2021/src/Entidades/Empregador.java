@@ -20,11 +20,6 @@ public class Empregador extends BaseEntity
         QuantidadeFuncionarios = quantidadeFuncionarios;
     }
 
-    public int getQuantidadeFuncionarios()
-    {
-        return QuantidadeFuncionarios;
-    }
-
     public void setQuantidadeFuncionarios(int quantidadeFuncionarios)
     {
         QuantidadeFuncionarios = quantidadeFuncionarios;
