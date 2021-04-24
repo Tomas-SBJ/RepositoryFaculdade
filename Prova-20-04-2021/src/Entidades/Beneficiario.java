@@ -12,13 +12,6 @@ public class Beneficiario
     {
     }
 
-    public Beneficiario(List<Empregado> empregado, List<Desempregado> desempregado, List<Empregador> empregador)
-    {
-        Empregado = empregado;
-        Desempregado = desempregado;
-        Empregador = empregador;
-    }
-
     public void setDesempregado(List<Desempregado> desempregado)
     {
         Desempregado = desempregado;

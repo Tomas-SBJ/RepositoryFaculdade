@@ -323,7 +323,6 @@ public class ResolucaoProva extends Metodos
             }
 
             valorTotalBeneficiarios += beneficioFinal;
-
         }
 
         System.out.println("Total de beneficiários: " + beneficiarios.size());
