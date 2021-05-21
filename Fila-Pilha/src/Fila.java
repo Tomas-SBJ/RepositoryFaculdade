@@ -4,9 +4,9 @@ public class Fila
 {
     public static void main(String[] args)
     {
-        String nome[] = new String[20];
-        String descricao[] = new String[20];
-        int idade[] = new int[20];
+        String[] nome = new String[20];
+        String[] descricao = new String[20];
+        int[] idade = new int[20];
         int opcao;
         int contador = 0;
         int atender;
@@ -22,8 +22,12 @@ public class Fila
             2 - Atender Paciente.
             3 - Sair.
             """);
-
             opcao = teclado.nextInt();
+
+            if (opcao != 1 && opcao != 2 && opcao != 3)
+            {
+                throw new IllegalArgumentException("Opção Invalida.");
+            }
 
             switch (opcao)
             {
@@ -48,7 +52,6 @@ public class Fila
                         }
                         else
                         {
-
                             System.out.println("Digite o Nome do " + (contador + 1) + "º Paciente");
                             nome[contador] = teclado.next();
 
@@ -85,7 +88,6 @@ public class Fila
 
                             j++;
                         }
-
                         nome[19] = null;
                         idade[19] = 0;
                         descricao[19] = null;
