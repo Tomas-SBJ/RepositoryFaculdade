@@ -7,7 +7,7 @@ public class Pilha
         int[] caixa = new int[20];
         int opcao;
         int contador = 0;
-        int quantidade = 0;
+        int quantidade;
         boolean loop = true;
 
         Scanner teclado = new Scanner(System.in);
@@ -30,29 +30,29 @@ public class Pilha
             switch (opcao)
             {
                 case 1 ->
-                {
-                    System.out.println("Digite a quantidade de caixas a serem adicionadas.");
-                    quantidade = teclado.nextInt();
+                        {
+                            System.out.println("Digite a quantidade de caixas a serem adicionadas.");
+                            quantidade = teclado.nextInt();
 
-                    for (int i = 0; i < quantidade; i++)
-                    {
-                        caixa[contador] = caixa[i] + 1;
+                            for (int i = 0; i < quantidade; i++)
+                            {
+                                caixa[contador] = caixa[i] + 1;
 
-                        contador++;
-                    }
-                }
+                                contador++;
+                            }
+                        }
                 case 2 ->
-                {
-                    System.out.println("Digite a quantidade de caixas a serem retiradas.");
-                    quantidade = teclado.nextInt();
+                        {
+                            System.out.println("Digite a quantidade de caixas a serem retiradas.");
+                            quantidade = teclado.nextInt();
 
-                    for (int i = 0; i < quantidade; i++)
-                    {
-                        caixa[contador] = caixa[i] - 1;
+                            for (int i = 0; i < quantidade; i++)
+                            {
+                                caixa[contador] = caixa[i] - 1;
 
-                        contador--;
-                    }
-                }
+                                contador--;
+                            }
+                        }
                 case 3 -> loop = false;
             }
         }
